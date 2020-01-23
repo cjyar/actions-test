@@ -1,0 +1,9 @@
+name: test
+on: push
+env:
+  FOO: bar
+jobs:
+  build:
+    steps:
+    - run: echo "::set-env name=BAR::${FOO}2"
+    - run: env | sort
