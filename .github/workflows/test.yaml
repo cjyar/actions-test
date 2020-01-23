@@ -4,6 +4,7 @@ env:
   FOO: bar
 jobs:
   build:
+    runs-on: ubuntu-18.04
     steps:
     - run: echo "::set-env name=BAR::${FOO}2"
     - run: env | sort
