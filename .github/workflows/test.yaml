@@ -8,3 +8,8 @@ jobs:
     steps:
     - run: echo "::set-env name=BAR::${FOO}2"
     - run: env | sort
+    - uses: IronCoreLabs/ironhide-actions/decrypt@v1
+      with:
+        keys: ${{ secrets.ironhide-keys }}
+        input: foo.txt.iron
+    - run: cat foo.txt
