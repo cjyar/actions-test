@@ -10,8 +10,9 @@ jobs:
     - run: env | sort
     - uses: IronCoreLabs/ironhide-actions/decrypt@master
       with:
-        entrypoint: /bin/bash
-        args: ls -la /github/workspace
+        entrypoint: ls
+        keys: "-la"
+        input: /github/workspace
     - uses: IronCoreLabs/ironhide-actions/decrypt@master
       with:
         keys: ${{ secrets.IRONHIDE_KEYS }}
