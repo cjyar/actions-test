@@ -10,7 +10,7 @@ jobs:
     - run: env | sort
     - uses: IronCoreLabs/ironhide-actions/decrypt@master
       with:
-        entrypoint: bash
+        entrypoint: /bin/bash
         args: ls -la /github/workspace
     - uses: IronCoreLabs/ironhide-actions/decrypt@master
       with:
