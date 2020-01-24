@@ -10,6 +10,10 @@ jobs:
     - run: env | sort
     - uses: IronCoreLabs/ironhide-actions/decrypt@master
       with:
+        entrypoint: bash
+        args: ls -la /github/workspace
+    - uses: IronCoreLabs/ironhide-actions/decrypt@master
+      with:
         keys: ${{ secrets.IRONHIDE_KEYS }}
         input: foo.txt.iron
     - run: cat foo.txt
