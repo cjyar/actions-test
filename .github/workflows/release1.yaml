@@ -31,10 +31,11 @@ jobs:
     - run: git commit -m "Setting version to ${{ steps.version.outputs.tag }}"
     - run: git push
     - name: Create PR
-      uses: peter-evans/create-pull-request@v2
-      with:
-        title: Release version ${{ steps.version.outputs.tag }}
-        body: |
-          The release will be created and built once this PR is merged.
-        branch: ${{ steps.version.outputs.current }}
-        base: master
+      run: |
+        curl --silent --show-error --fail -X POST \
+          -H "Authorization: token ${{ github.token }}" \
+          -F title="Release ${{ steps.version.outputs.tag }}" \
+          -F head=${{ github.ref }} \
+          -F base=master \
+          -F body="The release will be built when this PR is merged." \
+          https://api.github.com/repos/foo/bar/pulls
