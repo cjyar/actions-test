@@ -1,0 +1,54 @@
+name: Build release
+
+on:
+  pull_request:
+    types:
+    - closed
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == 'true'
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.base_ref }}
+    - name: Configure git
+      run: |
+        git config --local user.email bot@cjones.org
+        git config --local user.name "Row Bot"
+    - name: Calculate versions
+      id: version
+      run: |
+        CURRENT=$(basename ${{ github.ref }})
+        NAME=$(echo ${CURRENT} | sed 's/release-//')
+        NUMBER=$(echo ${NAME} | sed -E -e 's/[^0-9.]+/./g' -e 's/\.+/./g' -e 's/^\.//' -e 's/\.$//')
+        NEXT=$(echo ${NUMBER} | awk -F. -v OFS=. '{$NF++;print}')
+        echo "::set-output name=current::${CURRENT}"
+        echo "::set-output name=tag::${NAME}"
+        echo "::set-output name=dewey::${NUMBER}"
+        echo "::set-output name=next::${NEXT}"
+    - uses: actions/create-release@v1
+      id: release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Version ${{ steps.version.outputs.tag }}
+    - name: Upload artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.release.outputs.upload_url }}
+        asset_path: version
+        asset_name: example-artifact.txt
+        asset_content_type: text/plain
+    - name: Increment version
+      run: echo ${{ steps.version.outputs.next }}-SNAPSHOT > version
+    - name: Commit
+      run: |
+        git add version
+        git commit -m "Increment to next SNAPSHOT version"
+    - name: Push
+      run: git push
