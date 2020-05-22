@@ -1,15 +1,15 @@
 name: Start release
 
-on:
-  push:
-    branches:
-    - release-*
+on: create
 
 jobs:
   kickoff:
+    if: startsWith(github.event.create.ref, 'refs/heads/release-')
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.DEPLOYMENT_TOKEN }}
     - name: Configure git
       run: |
         git config --local user.email bot@cjones.org
