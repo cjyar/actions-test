@@ -15,7 +15,7 @@ jobs:
         EOF
 
   build:
-    if: github.event.pull_request.merged == 'true'
+    if: github.event.merged == 'true'
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
