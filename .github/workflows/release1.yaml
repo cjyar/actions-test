@@ -6,10 +6,13 @@ jobs:
   debug:
     runs-on: ubuntu-18.04
     steps:
-    - run: echo ${{ toJson(github.event) }}
+    - run: |
+        cat <<EOF
+        ${{ toJson(github.event) }}
+        EOF
 
   kickoff:
-    if: startsWith(github.event.create.ref, 'refs/heads/release-')
+    if: startsWith(github.event.ref, 'refs/heads/release-') && github.event.ref_type == 'branch'
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
