@@ -3,6 +3,11 @@ name: Start release
 on: create
 
 jobs:
+  debug:
+    runs-on: ubuntu-18.04
+    steps:
+    - run: echo ${{ github.event.create.ref }}
+
   kickoff:
     if: startsWith(github.event.create.ref, 'refs/heads/release-')
     runs-on: ubuntu-18.04
