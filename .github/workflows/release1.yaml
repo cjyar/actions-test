@@ -34,8 +34,10 @@ jobs:
       run: |
         curl --silent --show-error --fail -X POST \
           -H "Authorization: token ${{ github.token }}" \
-          -F title="Release ${{ steps.version.outputs.tag }}" \
-          -F head=${{ github.ref }} \
-          -F base=master \
-          -F body="The release will be built when this PR is merged." \
+          -H "Content-Type: application/json" \
+          --data '{"title": "Release ${{ steps.version.outputs.tag }}",
+            "head": "${{ github.ref }}",
+            "base": "master",
+            "body": "The release will be built when this PR is merged."
+            }' \
           https://api.github.com/repos/${{ github.repository }}/pulls
