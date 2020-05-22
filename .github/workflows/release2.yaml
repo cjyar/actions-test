@@ -6,6 +6,14 @@ on:
     - closed
 
 jobs:
+  debug:
+    runs-on: ubuntu-18.04
+    steps:
+    - run: |
+        cat <<EOF
+        ${{ toJson(github.event) }}
+        EOF
+
   build:
     if: github.event.pull_request.merged == 'true'
     runs-on: ubuntu-18.04
@@ -13,6 +21,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.base_ref }}
+        token: ${{ secrets.DEPLOYMENT_TOKEN }}
     - name: Configure git
       run: |
         git config --local user.email bot@cjones.org
@@ -28,12 +37,16 @@ jobs:
         echo "::set-output name=tag::${NAME}"
         echo "::set-output name=dewey::${NUMBER}"
         echo "::set-output name=next::${NEXT}"
+    - name: Create release tag
+      run: |
+        git tag ${{ steps.version.outputs.tag }}
+        git push origin ${{ steps.version.outputs.tag }}
     - uses: actions/create-release@v1
       id: release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
+        tag_name: ${{ steps.version.outputs.tag }}
         release_name: Version ${{ steps.version.outputs.tag }}
     - name: Upload artifact
       uses: actions/upload-release-asset@v1
