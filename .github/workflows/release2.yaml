@@ -29,7 +29,7 @@ jobs:
     - name: Calculate versions
       id: version
       run: |
-        CURRENT=$(basename ${{ github.ref }})
+        CURRENT=$(basename ${{ github.head_ref }})
         NAME=$(echo ${CURRENT} | sed 's/release-//')
         NUMBER=$(echo ${NAME} | sed -E -e 's/[^0-9.]+/./g' -e 's/\.+/./g' -e 's/^\.//' -e 's/\.$//')
         NEXT=$(echo ${NUMBER} | awk -F. -v OFS=. '{$NF++;print}')
